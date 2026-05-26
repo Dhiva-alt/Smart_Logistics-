@@ -3,18 +3,29 @@ import pandas as pd
 from datetime import datetime
 import requests
 from services.sla_service import check_sla
+import os
 
 mobile_bp=Blueprint(
     'mobile',
     __name__
 )
 
-df=pd.read_csv(
-    r"E:\enhanced_delivery_data.csv"
+# ---------- FIXED CSV PATH ----------
+
+BASE_DIR=os.path.dirname(
+    os.path.dirname(
+        os.path.abspath(__file__)
+    )
 )
 
+csv_path=os.path.join(
+    BASE_DIR,
+    "enhanced_delivery_data.csv"
+)
 
-# WEATHER API
+df=pd.read_csv(csv_path)
+
+# ---------- WEATHER API ----------
 
 API_KEY="ec6f3a50fe2e3c1073903a460fb777b2"
 
@@ -39,8 +50,10 @@ try:
         )
 
         condition=(
+
             data['weather'][0]
             ['description']
+
         )
 
 except:
@@ -48,36 +61,45 @@ except:
     pass
 
 
-
 @mobile_bp.route('/driver')
 
 def driver():
 
     total_orders=len(df)
+
     sla=check_sla()
 
     avg_delivery=round(
+
         df['Delivery_Time_min']
         .mean(),
+
         1
+
     )
 
     total_distance=round(
+
         df['Distance_km']
         .sum(),
+
         1
+
     )
 
     avg_score=round(
+
         df['Driver_Score']
         .mean(),
+
         1
+
     )
 
     prediction=round(
 
         df[
-        'Delivery_Time_min'
+            'Delivery_Time_min'
         ]
 
         .sample(1)
@@ -130,14 +152,16 @@ def driver():
 
 
     top_vehicles[
-    'score'
+        'score'
     ]=top_vehicles[
-    'score'
+        'score'
     ].round(1)
 
 
     top_vehicles=top_vehicles.to_dict(
+
         orient='records'
+
     )
 
 
@@ -174,7 +198,7 @@ def driver():
         driver="John Driver",
 
         date=datetime.now().strftime(
-        "%d %b %Y"
+            "%d %b %Y"
         ),
 
         deliveries=total_orders,
@@ -214,6 +238,7 @@ def driver():
         weekly_data=weekly_data,
 
         top_vehicles=top_vehicles,
+
         sla=sla
 
     )

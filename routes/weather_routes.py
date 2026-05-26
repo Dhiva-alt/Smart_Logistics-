@@ -1,29 +1,53 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint
 import requests
+import os
 
-weather_bp = Blueprint('weather', __name__)
+weather_bp = Blueprint(
+    'weather',
+    __name__
+)
 
 API_KEY="ec6f3a50fe2e3c1073903a460fb777b2"
 
-@weather_bp.route('/weather', methods=['GET'])
+
+@weather_bp.route('/weather')
+
 def get_weather():
 
     city="Chennai"
 
-    url=f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric"
+    try:
 
-    response=requests.get(url)
+        url=f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric"
 
-    data=response.json()
+        response=requests.get(url)
 
-    weather_data={
+        data=response.json()
 
-        "City": city,
-        "Temperature": data["main"]["temp"],
-        "Humidity": data["main"]["humidity"],
-        "Condition": data["weather"][0]["main"],
-        "WindSpeed": data["wind"]["speed"]
+        return {
 
-    }
+            "City":city,
 
-    return jsonify(weather_data)
+            "Temperature":
+            data['main']['temp'],
+
+            "Humidity":
+            data['main']['humidity'],
+
+            "Condition":
+            data['weather'][0]['main'],
+
+            "WindSpeed":
+            data['wind']['speed']
+
+        }
+
+    except Exception as e:
+
+        return {
+
+            "status":"error",
+
+            "message":str(e)
+
+        }

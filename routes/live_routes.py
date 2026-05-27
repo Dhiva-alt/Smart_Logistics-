@@ -1,46 +1,48 @@
-from flask import Blueprint
-import threading
-import time
+from flask import Blueprint,jsonify
 import random
 
 live_bp=Blueprint(
-    'live',
+    "live",
     __name__
 )
+
+lat=13.0827
+lon=80.2707
 
 statuses=[
 
 "On Route",
 "Delayed",
-"Delivered",
-"Traffic Alert"
+"Traffic Alert",
+"Delivered"
 
 ]
 
-lat=13.0827
-lon=80.2707
 
+@live_bp.route(
+"/live-location"
+)
 
-def send_updates(socketio):
+def live_location():
 
     global lat,lon
 
-    while True:
+    lat += random.uniform(
+        0.0002,
+        0.0007
+    )
 
-        lat += random.uniform(
-            0.0001,
-            0.0005
-        )
+    lon += random.uniform(
+        0.0002,
+        0.0007
+    )
 
-        lon += random.uniform(
-            0.0001,
-            0.0005
-        )
-
-        data={
+    return jsonify({
 
         "status":
-        random.choice(statuses),
+        random.choice(
+            statuses
+        ),
 
         "lat":
         lat,
@@ -48,32 +50,4 @@ def send_updates(socketio):
         "lon":
         lon
 
-        }
-
-        print("sending:",data)
-
-        socketio.emit(
-
-            "driver_update",
-
-            data
-
-        )
-
-        time.sleep(5)
-
-
-
-def start_live(socketio):
-
-    thread=threading.Thread(
-
-        target=send_updates,
-
-        args=(socketio,)
-
-    )
-
-    thread.daemon=True
-
-    thread.start()
+    })

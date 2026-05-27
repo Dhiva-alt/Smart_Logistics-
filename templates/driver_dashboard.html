@@ -529,6 +529,8 @@ map.invalidateSize()
 
 // MAP
 
+
+
 const map=L.map(
 'map'
 ).setView(
@@ -536,42 +538,38 @@ const map=L.map(
 11
 )
 
-
 L.tileLayer(
 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
 {
 attribution:'OpenStreetMap'
 }
-)
-.addTo(map)
+).addTo(map)
 
 
-
-// Warehouse
 
 L.marker(
 [13.0827,80.2707]
 )
+
 .addTo(map)
+
 .bindPopup(
 "🏭 Warehouse"
 )
 
 
 
-// Destination
-
 L.marker(
 [13.1143,80.2830]
 )
+
 .addTo(map)
+
 .bindPopup(
-"📦 Delivery Point"
+"📦 Destination"
 )
 
 
-
-// Route Line
 
 L.polyline(
 
@@ -587,163 +585,42 @@ weight:6
 }
 
 )
+
 .addTo(map)
 
 
-// Live driver marker
 
-var driverMarker=
+var truck=L.marker(
 
-L.marker(
 [13.0827,80.2707]
+
 )
 
 .addTo(map)
 
 .bindPopup(
-"🚚 Driver Live Location"
-)
-
-
-// Prediction
-
-fetch('/predictions')
-
-.then(
-res=>res.json()
-)
-
-.then(data=>{
-
-document
-.getElementById(
-"prediction"
-)
-
-.innerHTML=
-
-"⏱ Prediction: "+
-
-data[0]
-["Predicted"]
-.toFixed(0)
-
-+
-
-" mins"
-
-})
-
-.catch(()=>{
-
-document
-.getElementById(
-"prediction"
-)
-
-.innerHTML=
-
-"⏱ Prediction:38 mins"
-
-})
-
-
-
-
-// Chart
-
-new Chart(
-
-document
-.getElementById(
-'deliveryChart'
-),
-
-{
-
-type:'line',
-
-data:{
-
-labels:[
-
-"Sun",
-"Mon",
-"Tue",
-"Wed",
-"Thu",
-"Fri",
-"Sat"
-
-],
-
-datasets:[{
-
-label:"Deliveries",
-
-data:[
-
-120,
-210,
-260,
-300,
-350,
-420,
-280
-
-],
-
-borderColor:"#00ff90",
-
-backgroundColor:
-"rgba(0,255,140,.2)",
-
-fill:true,
-
-tension:.4
-
-}]
-
-},
-
-options:{
-
-responsive:true,
-maintainAspectRatio:false
-
-}
-
-}
-
+"🚚 Driver"
 )
 
 
 
-// Socket
-
-const socket=io()
+async function updateDriver(){
 
 
-socket.on(
+const response=
 
-'driver_update',
-
-function(data){
-
-
-document
-.getElementById(
-"driverStatus"
+await fetch(
+"/live-location"
 )
 
-.innerHTML=
 
-"📍 "+
+const data=
 
-data.status
+await response.json()
 
 
-driverMarker.setLatLng([
+
+truck.setLatLng([
 
 data.lat,
 data.lon
@@ -751,22 +628,25 @@ data.lon
 ])
 
 
-driverMarker.bindPopup(
+truck.bindPopup(
 
-"🚚 Driver Status<br><br>"+
+"🚚 "+
 
 data.status+
 
-"<br><br>Latitude: "+
+"<br><br>"+
+
+"Lat:"+
 
 data.lat.toFixed(4)+
 
-"<br>Longitude: "+
+"<br>"+
+
+"Lon:"+
 
 data.lon.toFixed(4)
 
 )
-
 
 
 map.panTo([
@@ -776,7 +656,15 @@ data.lon
 
 ])
 
+
 }
+
+
+setInterval(
+
+updateDriver,
+
+3000
 
 )
 

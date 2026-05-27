@@ -1,104 +1,78 @@
-from flask import Blueprint,request,jsonify
 import pandas as pd
-import os
 
-chat_bp=Blueprint(
-    "chat",
-    __name__
-)
-
-df=pd.read_csv(
+df = pd.read_csv(
     "enhanced_delivery_data.csv"
 )
 
-@chat_bp.route(
-    "/chat",
-    methods=["POST"]
-)
-def chat():
 
-    data=request.get_json()
+def ask_bot(question):
 
-    message=data.get(
-        "message",
-        ""
-    ).lower().strip()
+    question = question.lower().strip()
 
+    if "delivery" in question:
 
-    if "delivery" in message:
-
-        answer=f"""
+        return f"""
 Total deliveries:
 {len(df)}
 """
 
-    elif "average" in message and "time" in message:
+    elif "average" in question and "time" in question:
 
-        avg=round(
-            df[
-            "Delivery_Time_min"
-            ].mean(),
+        avg = round(
+            df["Delivery_Time_min"]
+            .mean(),
             1
         )
 
-        answer=f"""
+        return f"""
 Average delivery time:
 {avg} minutes
 """
 
-    elif "distance" in message:
+    elif "distance" in question:
 
-        total=round(
-            df[
-            "Distance_km"
-            ].sum(),
+        total = round(
+            df["Distance_km"]
+            .sum(),
             1
         )
 
-        answer=f"""
+        return f"""
 Total distance:
 {total} km
 """
 
-    elif "driver" in message:
+    elif "driver" in question:
 
-        score=round(
-            df[
-            "Driver_Score"
-            ].mean(),
+        score = round(
+            df["Driver_Score"]
+            .mean(),
             1
         )
 
-        answer=f"""
-Average driver score:
+        return f"""
+Average Driver Score:
 {score}
 """
 
-    elif "vehicle" in message:
+    elif "vehicle" in question:
 
-        vehicles = df[
-            "Vehicle_Type"
-        ].value_counts().to_dict()
-
-        answer = str(
-            vehicles
+        vehicles = (
+            df["Vehicle_Type"]
+            .value_counts()
+            .to_dict()
         )
+
+        return str(vehicles)
 
     else:
 
-        answer="""
-I can help with:
+        return """
+I can answer:
 
 • deliveries
-• drivers
-• weather
-• distance
+• average time
+• driver score
 • vehicles
+• distance
 """
-
-    return jsonify({
-
-        "response":
-        answer
-
-    })

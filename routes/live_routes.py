@@ -1,5 +1,4 @@
-from flask import Blueprint,jsonify
-from flask_socketio import emit
+from flask import Blueprint
 import threading
 import time
 import random
@@ -18,7 +17,6 @@ statuses=[
 
 ]
 
-
 lat=13.0827
 lon=80.2707
 
@@ -30,15 +28,14 @@ def send_updates(socketio):
     while True:
 
         lat += random.uniform(
-        0.0001,
-        0.0006
+            0.0001,
+            0.0005
         )
 
         lon += random.uniform(
-        0.0001,
-        0.0006
+            0.0001,
+            0.0005
         )
-
 
         data={
 
@@ -53,12 +50,13 @@ def send_updates(socketio):
 
         }
 
+        print("sending:",data)
 
         socketio.emit(
 
-        "driver_update",
+            "driver_update",
 
-        data
+            data
 
         )
 
@@ -70,9 +68,9 @@ def start_live(socketio):
 
     thread=threading.Thread(
 
-    target=send_updates,
+        target=send_updates,
 
-    args=(socketio,)
+        args=(socketio,)
 
     )
 

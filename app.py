@@ -14,18 +14,20 @@ from routes.otif_routes import otif_bp
 from routes.mobile_routes import mobile_bp
 from routes.predictions_routes import prediction_bp
 from routes.weather_routes import weather_bp
-from routes.live_routes import live_bp
-from routes.live_routes import start_live
-
+from routes.live_routes import live_bp,start_live
 
 load_dotenv()
 
 app=Flask(__name__)
+
 socketio=SocketIO(
     app,
-    cors_allowed_origins="*"
+    cors_allowed_origins="*",
+    async_mode="threading"
 )
+
 start_live(socketio)
+
 app.config["MAIL_SERVER"]=os.getenv(
     "MAIL_SERVER",
     "smtp.gmail.com"
@@ -54,6 +56,7 @@ app.config["MAIL_PASSWORD"]=os.getenv(
     "MAIL_PASSWORD",
     ""
 )
+
 mail.init_app(app)
 
 app.config["JWT_SECRET_KEY"]=os.getenv(
@@ -63,38 +66,33 @@ app.config["JWT_SECRET_KEY"]=os.getenv(
 
 jwt=JWTManager(app)
 
-
 app.register_blueprint(auth_bp)
 app.register_blueprint(report_bp)
 app.register_blueprint(email_bp)
 app.register_blueprint(chat_bp)
 app.register_blueprint(sla_bp)
-app.register_blueprint(
-otif_bp
-)
-app.register_blueprint(
-mobile_bp
-)
+app.register_blueprint(otif_bp)
+app.register_blueprint(mobile_bp)
 app.register_blueprint(prediction_bp)
 app.register_blueprint(weather_bp)
-app.register_blueprint(
-live_bp
-)
+app.register_blueprint(live_bp)
+
 app.register_error_handler(
-Exception,
-handle_error
+    Exception,
+    handle_error
 )
 
 @app.route('/')
 
 def home():
 
-    return{
+    return {
 
     "message":
     "Smart Logistics API Running"
 
     }
+
 
 if __name__=="__main__":
 

@@ -357,6 +357,13 @@ http://127.0.0.1:5000
 Deployed using Render Cloud Platform.
 
 ---
+# 🌐 Project Links
+
+Website:
+https://smart-logistics-k6dl.onrender.com
+
+Power BI Dashboard:
+https://app.powerbi.com/reportEmbed?reportId=89c0e574-fca4-42ef-8e67-4cd8d70c4639&autoAuth=true&ctid=70ad6609-70d8-4962-a379-3581f839202a
 
 # 🔮 Future Enhancements
 

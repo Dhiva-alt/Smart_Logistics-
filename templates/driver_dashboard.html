@@ -949,12 +949,18 @@ message:message
 })
 
 const data=
-
 await response.json()
+
+let botReply=
+
+data.response ||
+data.message ||
+data.reply ||
+"Sorry, no response received"
 
 box.innerHTML+=
 `<div class='bot-message'>
-${data.response}
+${botReply}
 </div>`
 
 box.scrollTop=

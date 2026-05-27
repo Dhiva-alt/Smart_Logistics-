@@ -527,6 +527,8 @@ map.invalidateSize()
 
 
 
+// MAP
+
 const map=L.map(
 'map'
 ).setView(
@@ -538,30 +540,38 @@ const map=L.map(
 L.tileLayer(
 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
 {
-attribution:
-'OpenStreetMap'
+attribution:'OpenStreetMap'
 }
 )
 .addTo(map)
 
+
+
+// Warehouse
 
 L.marker(
 [13.0827,80.2707]
 )
 .addTo(map)
 .bindPopup(
-"Warehouse"
+"🏭 Warehouse"
 )
 
+
+
+// Destination
 
 L.marker(
 [13.1143,80.2830]
 )
 .addTo(map)
 .bindPopup(
-"Delivery Point"
+"📦 Delivery Point"
 )
 
+
+
+// Route Line
 
 L.polyline(
 
@@ -573,13 +583,29 @@ L.polyline(
 {
 color:"#00ff90",
 weight:6
+
 }
 
+)
+.addTo(map)
+
+
+// Live driver marker
+
+var driverMarker=
+
+L.marker(
+[13.0827,80.2707]
 )
 
 .addTo(map)
 
+.bindPopup(
+"🚚 Driver Live Location"
+)
 
+
+// Prediction
 
 fetch('/predictions')
 
@@ -596,9 +622,7 @@ document
 
 .innerHTML=
 
-"⏱ Prediction: "
-
-+
+"⏱ Prediction: "+
 
 data[0]
 ["Predicted"]
@@ -625,6 +649,9 @@ document
 
 
 
+
+// Chart
+
 new Chart(
 
 document
@@ -639,6 +666,7 @@ type:'line',
 data:{
 
 labels:[
+
 "Sun",
 "Mon",
 "Tue",
@@ -646,6 +674,7 @@ labels:[
 "Thu",
 "Fri",
 "Sat"
+
 ],
 
 datasets:[{
@@ -653,6 +682,7 @@ datasets:[{
 label:"Deliveries",
 
 data:[
+
 120,
 210,
 260,
@@ -660,6 +690,7 @@ data:[
 350,
 420,
 280
+
 ],
 
 borderColor:"#00ff90",
@@ -688,13 +719,17 @@ maintainAspectRatio:false
 
 
 
-const socket=io();
+// Socket
+
+const socket=io()
+
 
 socket.on(
 
-'location_update',
+'driver_update',
 
-(data)=>{
+function(data){
+
 
 document
 .getElementById(
@@ -703,11 +738,43 @@ document
 
 .innerHTML=
 
-"📍 "
-
-+
+"📍 "+
 
 data.status
+
+
+driverMarker.setLatLng([
+
+data.lat,
+data.lon
+
+])
+
+
+driverMarker.bindPopup(
+
+"🚚 Driver Status<br><br>"+
+
+data.status+
+
+"<br><br>Latitude: "+
+
+data.lat.toFixed(4)+
+
+"<br>Longitude: "+
+
+data.lon.toFixed(4)
+
+)
+
+
+
+map.panTo([
+
+data.lat,
+data.lon
+
+])
 
 }
 

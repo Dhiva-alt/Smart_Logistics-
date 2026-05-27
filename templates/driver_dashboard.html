@@ -219,6 +219,127 @@ transform:translateY(0)
 }
 
 }
+#chatbot-btn{
+
+position:fixed;
+
+bottom:20px;
+
+right:20px;
+
+width:60px;
+
+height:60px;
+
+background:#00C853;
+
+border-radius:50%;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+font-size:30px;
+
+cursor:pointer;
+
+z-index:1000;
+
+box-shadow:0 0 15px rgba(0,0,0,.3);
+
+}
+
+#chat-container{
+
+position:fixed;
+
+right:20px;
+
+bottom:90px;
+
+width:340px;
+
+height:450px;
+
+background:white;
+
+border-radius:15px;
+
+display:none;
+
+overflow:hidden;
+
+box-shadow:0 0 25px rgba(0,0,0,.4);
+
+z-index:1000;
+
+}
+
+#chat-header{
+
+background:#071B34;
+
+color:white;
+
+padding:15px;
+
+font-weight:bold;
+
+}
+
+#chat-messages{
+
+height:320px;
+
+overflow-y:auto;
+
+padding:10px;
+
+}
+
+.bot-message{
+
+background:#e8f5e9;
+
+padding:10px;
+
+border-radius:10px;
+
+margin-bottom:10px;
+
+}
+
+.user-message{
+
+background:#dbeafe;
+
+padding:10px;
+
+border-radius:10px;
+
+margin-bottom:10px;
+
+text-align:right;
+
+}
+
+#chat-input-area{
+
+display:flex;
+
+padding:10px;
+
+}
+
+#user-message{
+
+flex:1;
+
+padding:10px;
+
+}
 
 </style>
 
@@ -712,6 +833,148 @@ data.status
 }
 
 )
+
+</script>
+<!-- Chatbot Floating Button -->
+<div id="chatbot-btn">
+    💬
+</div>
+
+<!-- Chatbot Window -->
+
+<div id="chat-container">
+
+    <div id="chat-header">
+        🤖 Smart Logistics Assistant
+    </div>
+
+    <div id="chat-messages">
+
+        <div class="bot-message">
+
+            Hello! Ask about deliveries,
+            SLA, weather or logistics.
+
+        </div>
+
+    </div>
+
+    <div id="chat-input-area">
+
+        <input
+        type="text"
+        id="user-message"
+        placeholder="Ask something..."
+        >
+
+        <button onclick="sendMessage()">
+
+        Send
+
+        </button>
+
+    </div>
+
+</div>
+<script>
+
+const btn=
+document.getElementById(
+"chatbot-btn"
+)
+
+const chat=
+document.getElementById(
+"chat-container"
+)
+
+btn.onclick=()=>{
+
+chat.style.display=
+
+chat.style.display==="block"
+
+?"none"
+
+:"block"
+
+}
+
+async function sendMessage(){
+
+let input=
+
+document.getElementById(
+"user-message"
+)
+
+let message=input.value
+
+if(!message)return
+
+let box=
+
+document.getElementById(
+"chat-messages"
+)
+
+box.innerHTML+=
+`<div class='user-message'>
+${message}
+</div>`
+
+input.value=""
+
+try{
+
+const response=
+
+await fetch("/chat",{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":
+"application/json"
+
+},
+
+body:JSON.stringify({
+
+message:message
+
+})
+
+})
+
+const data=
+
+await response.json()
+
+box.innerHTML+=
+`<div class='bot-message'>
+${data.response}
+</div>`
+
+box.scrollTop=
+
+box.scrollHeight
+
+}
+
+catch{
+
+box.innerHTML+=
+`<div class='bot-message'>
+
+Error contacting assistant
+
+</div>`
+
+}
+
+}
 
 </script>
 

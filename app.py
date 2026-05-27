@@ -1,10 +1,10 @@
 from flask import Flask
-from flask_socketio import SocketIO
 from dotenv import load_dotenv
 from flask_jwt_extended import JWTManager
 from routes.auth_routes import auth_bp
 from utils.error_handler import handle_error
 import os
+
 from routes.report_routes import report_bp
 from routes.email_routes import email_bp
 from config.mail_config import mail
@@ -14,23 +14,13 @@ from routes.otif_routes import otif_bp
 from routes.mobile_routes import mobile_bp
 from routes.predictions_routes import prediction_bp
 from routes.weather_routes import weather_bp
-from routes.live_routes import live_bp,start_live
+from routes.live_routes import live_bp
+
 
 load_dotenv()
 
 app=Flask(__name__)
 
-socketio=SocketIO(
-
-    app,
-
-    cors_allowed_origins="*",
-
-    async_mode="threading"
-
-)
-
-start_live(socketio)
 
 app.config["MAIL_SERVER"]=os.getenv(
     "MAIL_SERVER",
@@ -63,12 +53,14 @@ app.config["MAIL_PASSWORD"]=os.getenv(
 
 mail.init_app(app)
 
+
 app.config["JWT_SECRET_KEY"]=os.getenv(
-"JWT_SECRET_KEY",
-"SmartLogisticsSecret"
+    "JWT_SECRET_KEY",
+    "SmartLogisticsSecret"
 )
 
 jwt=JWTManager(app)
+
 
 app.register_blueprint(auth_bp)
 app.register_blueprint(report_bp)
@@ -81,10 +73,12 @@ app.register_blueprint(prediction_bp)
 app.register_blueprint(weather_bp)
 app.register_blueprint(live_bp)
 
+
 app.register_error_handler(
     Exception,
     handle_error
 )
+
 
 @app.route('/')
 
@@ -92,24 +86,23 @@ def home():
 
     return {
 
-    "message":
-    "Smart Logistics API Running"
+        "message":
+        "Smart Logistics API Running"
 
     }
 
 
+
 if __name__=="__main__":
 
-    socketio.run(
-
-        app,
+    app.run(
 
         host="0.0.0.0",
 
         port=int(
             os.getenv(
                 "PORT",
-               5000
+                5000
             )
         ),
 

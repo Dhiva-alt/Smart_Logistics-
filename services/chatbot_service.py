@@ -1,82 +1,104 @@
+from flask import Blueprint,request,jsonify
 import pandas as pd
+import os
 
-df = pd.read_csv(
+chat_bp=Blueprint(
+    "chat",
+    __name__
+)
+
+df=pd.read_csv(
     "enhanced_delivery_data.csv"
 )
 
+@chat_bp.route(
+    "/chat",
+    methods=["POST"]
+)
+def chat():
 
-def ask_bot(question):
+    data=request.get_json()
 
-    question = question.lower()
+    message=data.get(
+        "message",
+        ""
+    ).lower().strip()
 
 
-    if ("vehicle" in question or
-        "best" in question or
-        "perform" in question):
+    if "delivery" in message:
 
-        result = df.groupby(
+        answer=f"""
+Total deliveries:
+{len(df)}
+"""
+
+    elif "average" in message and "time" in message:
+
+        avg=round(
+            df[
+            "Delivery_Time_min"
+            ].mean(),
+            1
+        )
+
+        answer=f"""
+Average delivery time:
+{avg} minutes
+"""
+
+    elif "distance" in message:
+
+        total=round(
+            df[
+            "Distance_km"
+            ].sum(),
+            1
+        )
+
+        answer=f"""
+Total distance:
+{total} km
+"""
+
+    elif "driver" in message:
+
+        score=round(
+            df[
+            "Driver_Score"
+            ].mean(),
+            1
+        )
+
+        answer=f"""
+Average driver score:
+{score}
+"""
+
+    elif "vehicle" in message:
+
+        vehicles = df[
             "Vehicle_Type"
-        )["Delivery_Time_min"].mean()
+        ].value_counts().to_dict()
 
-        best = result.idxmin()
-
-        value = round(
-            result.min(),
-            2
+        answer = str(
+            vehicles
         )
-
-        return f"{best} performs best with average delivery time {value} minutes."
-
-
-    elif ("delay" in question or
-          "late" in question):
-
-        avg = round(
-            df["Delivery_Time_min"].mean(),
-            2
-        )
-
-        return f"Average delivery time is {avg} mins. Weather and traffic are major causes of delays."
-
-
-    elif ("driver" in question or
-          "courier" in question):
-
-        score = round(
-            df["Driver_Score"].mean(),
-            2
-        )
-
-        return f"Average driver score is {score}"
-
-
-    elif ("route" in question):
-
-        route = round(
-            df["Route_Score"].mean(),
-            2
-        )
-
-        return f"Route optimization score is {route}"
-
-
-    elif ("fuel" in question):
-
-        fuel = round(
-            df["Fuel_Efficiency"].mean(),
-            2
-        )
-
-        return f"Average fuel efficiency is {fuel}"
-
 
     else:
 
-        return """
-Ask:
-- Which vehicle performs best?
-- Why are deliveries delayed?
-- Driver performance
-- Route optimization
-- Fuel efficiency
-"""    
+        answer="""
+I can help with:
+
+• deliveries
+• drivers
+• weather
+• distance
+• vehicles
+"""
+
+    return jsonify({
+
+        "response":
+        answer
+
+    })

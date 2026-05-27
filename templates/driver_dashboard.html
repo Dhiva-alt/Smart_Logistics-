@@ -219,127 +219,6 @@ transform:translateY(0)
 }
 
 }
-#chatbot-btn{
-
-position:fixed;
-
-bottom:20px;
-
-right:20px;
-
-width:60px;
-
-height:60px;
-
-background:#00C853;
-
-border-radius:50%;
-
-display:flex;
-
-align-items:center;
-
-justify-content:center;
-
-font-size:30px;
-
-cursor:pointer;
-
-z-index:1000;
-
-box-shadow:0 0 15px rgba(0,0,0,.3);
-
-}
-
-#chat-container{
-
-position:fixed;
-
-right:20px;
-
-bottom:90px;
-
-width:340px;
-
-height:450px;
-
-background:white;
-
-border-radius:15px;
-
-display:none;
-
-overflow:hidden;
-
-box-shadow:0 0 25px rgba(0,0,0,.4);
-
-z-index:1000;
-
-}
-
-#chat-header{
-
-background:#071B34;
-
-color:white;
-
-padding:15px;
-
-font-weight:bold;
-
-}
-
-#chat-messages{
-
-height:320px;
-
-overflow-y:auto;
-
-padding:10px;
-
-}
-
-.bot-message{
-
-background:#e8f5e9;
-
-padding:10px;
-
-border-radius:10px;
-
-margin-bottom:10px;
-
-}
-
-.user-message{
-
-background:#dbeafe;
-
-padding:10px;
-
-border-radius:10px;
-
-margin-bottom:10px;
-
-text-align:right;
-
-}
-
-#chat-input-area{
-
-display:flex;
-
-padding:10px;
-
-}
-
-#user-message{
-
-flex:1;
-
-padding:10px;
-
-}
 
 </style>
 
@@ -835,72 +714,374 @@ data.status
 )
 
 </script>
-<!-- Chatbot Floating Button -->
+<!-- ================= CHATBOT ================= -->
+
+<style>
+
+#chatbot-btn{
+
+position:fixed;
+bottom:30px;
+right:30px;
+
+width:70px;
+height:70px;
+
+border-radius:50%;
+
+background:#3B82F6;
+
+display:flex;
+
+justify-content:center;
+align-items:center;
+
+font-size:32px;
+
+cursor:pointer;
+
+box-shadow:
+0px 0px 25px rgba(
+0,0,0,.4
+);
+
+z-index:9999;
+
+}
+
+
+#chat-container{
+
+position:fixed;
+
+bottom:120px;
+right:30px;
+
+width:430px;
+height:560px;
+
+background:#f7f7f7;
+
+border-radius:30px;
+
+overflow:hidden;
+
+display:none;
+
+box-shadow:
+0px 0px 30px rgba(
+0,0,0,.4
+);
+
+z-index:9999;
+
+}
+
+
+
+#chat-header{
+
+height:95px;
+
+background:#243665;
+
+display:flex;
+
+justify-content:
+space-between;
+
+align-items:center;
+
+padding:25px;
+
+color:white;
+
+font-size:22px;
+
+font-weight:bold;
+
+}
+
+
+
+#close-chat{
+
+font-size:30px;
+
+cursor:pointer;
+
+}
+
+
+
+#chat-messages{
+
+height:360px;
+
+overflow-y:auto;
+
+padding:20px;
+
+}
+
+
+
+.bot-row{
+
+display:flex;
+
+align-items:flex-start;
+
+gap:10px;
+
+margin-bottom:20px;
+
+}
+
+
+
+.bot-avatar{
+
+width:70px;
+
+height:70px;
+
+border-radius:50%;
+
+}
+
+
+
+.bot-message{
+
+background:#dbeafe;
+
+padding:18px;
+
+border-radius:20px;
+
+max-width:240px;
+
+font-size:20px;
+
+color:#2c2c2c;
+
+}
+
+
+
+.user-message{
+
+margin-left:auto;
+
+background:#c7d7f2;
+
+padding:18px;
+
+border-radius:20px;
+
+max-width:240px;
+
+margin-bottom:20px;
+
+font-size:18px;
+
+text-align:right;
+
+}
+
+
+
+#chat-input-area{
+
+position:absolute;
+
+bottom:15px;
+
+width:100%;
+
+display:flex;
+
+padding:15px;
+
+gap:10px;
+
+}
+
+
+
+#user-message{
+
+flex:1;
+
+padding:18px;
+
+border:none;
+
+outline:none;
+
+border-radius:15px;
+
+background:#dbeafe;
+
+font-size:18px;
+
+}
+
+
+
+#chat-input-area button{
+
+width:60px;
+
+border:none;
+
+border-radius:15px;
+
+background:#243665;
+
+color:white;
+
+font-size:22px;
+
+cursor:pointer;
+
+}
+
+</style>
+
+
+
+<!-- Floating Button -->
+
 <div id="chatbot-btn">
-    💬
+
+💬
+
 </div>
 
-<!-- Chatbot Window -->
+
+
+<!-- Chat Window -->
 
 <div id="chat-container">
 
-    <div id="chat-header">
-        🤖 Smart Logistics Assistant
-    </div>
+<div id="chat-header">
 
-    <div id="chat-messages">
+<span>
 
-        <div class="bot-message">
+AI ChatBot
 
-            Hello! Ask about deliveries,
-            SLA, weather or logistics.
+</span>
 
-        </div>
+<span id="close-chat">
 
-    </div>
+✕
 
-    <div id="chat-input-area">
-
-        <input
-        type="text"
-        id="user-message"
-        placeholder="Ask something..."
-        >
-
-        <button onclick="sendMessage()">
-
-        Send
-
-        </button>
-
-    </div>
+</span>
 
 </div>
+
+
+
+<div id="chat-messages">
+
+<div class="bot-row">
+
+<img
+src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png"
+class="bot-avatar"
+>
+
+<div class="bot-message">
+
+Hello! How can I help you today?
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<div id="chat-input-area">
+
+<input
+
+type="text"
+
+id="user-message"
+
+placeholder="Enter Message"
+
+>
+
+
+<button
+
+onclick="sendMessage()"
+
+>
+
+➤
+
+</button>
+
+</div>
+
+</div>
+
+
+
 <script>
 
 const btn=
+
 document.getElementById(
 "chatbot-btn"
 )
 
 const chat=
+
 document.getElementById(
 "chat-container"
 )
 
+const closeBtn=
+
+document.getElementById(
+"close-chat"
+)
+
+const box=
+
+document.getElementById(
+"chat-messages"
+)
+
+
+
 btn.onclick=()=>{
 
 chat.style.display=
-
-chat.style.display==="block"
-
-?"none"
-
-:"block"
+"block"
 
 }
 
+
+
+closeBtn.onclick=()=>{
+
+chat.style.display=
+"none"
+
+}
+
+
+
 async function sendMessage(){
+
 
 let input=
 
@@ -908,28 +1089,44 @@ document.getElementById(
 "user-message"
 )
 
-let message=input.value
 
-if(!message)return
+let message=
 
-let box=
+input.value.trim()
 
-document.getElementById(
-"chat-messages"
-)
+
+if(!message)
+return
+
+
 
 box.innerHTML+=
+
 `<div class='user-message'>
+
 ${message}
+
 </div>`
+
 
 input.value=""
 
+
+box.scrollTop=
+
+box.scrollHeight
+
+
 try{
+
 
 const response=
 
-await fetch("/chat",{
+await fetch(
+
+"/chat",
+
+{
 
 method:"POST",
 
@@ -946,43 +1143,98 @@ message:message
 
 })
 
-})
+}
+
+)
+
+
 
 const data=
+
 await response.json()
+
+
 
 let botReply=
 
 data.response ||
+
 data.message ||
+
 data.reply ||
+
 "Sorry, no response received"
 
-box.innerHTML+=
-`<div class='bot-message'>
+
+
+box.innerHTML +=
+
+`
+
+<div class='bot-row'>
+
+
+<img
+
+src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png"
+
+class="bot-avatar"
+
+>
+
+
+<div class='bot-message'>
+
 ${botReply}
-</div>`
+
+</div>
+
+</div>
+
+`
+
 
 box.scrollTop=
 
 box.scrollHeight
 
+
 }
 
 catch{
 
-box.innerHTML+=
-`<div class='bot-message'>
 
-Error contacting assistant
+box.innerHTML +=
 
-</div>`
+`
+
+<div class='bot-row'>
+
+
+<img
+
+src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png"
+
+class="bot-avatar"
+
+>
+
+
+<div class='bot-message'>
+
+Server Error
+
+</div>
+
+</div>
+
+`
 
 }
+
 
 }
 
 </script>
-
 </body>
 </html>

@@ -21,9 +21,13 @@ load_dotenv()
 app=Flask(__name__)
 
 socketio=SocketIO(
+
     app,
+
     cors_allowed_origins="*",
+
     async_mode="threading"
+
 )
 
 start_live(socketio)
@@ -105,7 +109,7 @@ if __name__=="__main__":
         port=int(
             os.getenv(
                 "PORT",
-                5000
+               5000
             )
         ),
 

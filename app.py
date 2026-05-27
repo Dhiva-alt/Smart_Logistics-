@@ -21,7 +21,10 @@ from routes.live_routes import start_live
 load_dotenv()
 
 app=Flask(__name__)
-socketio=SocketIO(app)
+socketio=SocketIO(
+    app,
+    cors_allowed_origins="*"
+)
 start_live(socketio)
 app.config["MAIL_SERVER"]=os.getenv(
     "MAIL_SERVER",
@@ -96,7 +99,18 @@ def home():
 if __name__=="__main__":
 
     socketio.run(
+
         app,
-        debug=True,
-        port=int(os.getenv("PORT",5000))
+
+        host="0.0.0.0",
+
+        port=int(
+            os.getenv(
+                "PORT",
+                5000
+            )
+        ),
+
+        debug=True
+
     )
